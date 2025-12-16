@@ -30,6 +30,7 @@ public class SpotifyApiService {
         
         return response.getBody();
     }
+    //get the top tracks from spotify, only 10 tracks to not be annoying
     public String getTopTracks(String accessToken) {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(accessToken);
@@ -45,6 +46,7 @@ public class SpotifyApiService {
     
     return response.getBody();
 }
+//connects 2 api and get features
 public String getTrackFeatures(String accessToken, String trackId) {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(accessToken);
@@ -60,7 +62,7 @@ public String getTrackFeatures(String accessToken, String trackId) {
     
     return response.getBody();
 }
-
+//using danceability to get recs
 public String getRecommendations(String accessToken, String seedTracks, String targetEnergy, String targetDanceability) {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(accessToken);

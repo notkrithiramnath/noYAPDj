@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import noYapDj.demo.config.SpotifyConfig;
 import java.util.Base64;
 import java.util.Map;
-//handle spotify authentication
+//handle spotify authentication when u click log in
 @Service
 public class SpotifyAuthService {
     private final RestTemplate restTemplate;
