@@ -47,5 +47,13 @@ public class SpotifyController {
         @RequestHeader("Authorization") String token) {
         String accessToken = token.replace("Bearer ", "");
         return ResponseEntity.ok(apiService.getTopTracks(accessToken));
-    }
+    }       
+    //the recs from dj
+    @GetMapping("/recommendations")
+    public ResponseEntity<String> getRecommendations(
+    @RequestParam String seed_tracks,
+    @RequestHeader("Authorization") String token) {
+    String accessToken = token.replace("Bearer ", "");
+    return ResponseEntity.ok(apiService.getRecommendations(accessToken, seed_tracks));
+}
 }

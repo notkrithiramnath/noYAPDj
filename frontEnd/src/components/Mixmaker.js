@@ -1,5 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import './Mixmaker.css';
+const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    window.location.href = '/';
+  };
+
+  const autoGeneratePlaylist = async () => {
+    if (mix.length === 0) {
+      setError('Add at least one song to your mix before using Auto DJ');
+      return;
+    }
+
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      setError('Please login first');
+      return;
+    }
+
+    setAutoGenerating(true);
+    setError('');
+    
+    try {
+      // Get seed tracks (first 5 tracks from mix, or all if less than 5)
+      const seedTracks = mix.slice(0, 5).map(t => t.id).join(',');
+      
+      // Call recommendations endpoint
+      const response = await fetch(
+        `http://127.0.0.1:8080/api/recommendations?seed_tracks=${seedTracks}`,
+        {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        }
+      );
+      
+      if (!response.ok) throw new Error('Failed to generate recommendations');
+      
+      const data = await response.json();
+      const recommendations = data.tracks || [];
+      
+      // Add recommendations to mix (avoid duplicates)
+      const newTracks = recommendations.filter(
+        rec => !mix.some(m => m.id === rec.id)
+      );
+      
+      if (newTracks.length === 0) {
+        setError('No new recommendations found. Your mix is already complete!');
+      } else {
+        setMix([...mix, ...newTracks]);
+        setTracks([]); // Clear search results
+        setQuery(''); // Clear search query
+      }
+    } catch (error) {
+      console.error('Auto DJ error:', error);
+      setError('Failed to generate recommendations');
+    }
+    
+    setAutoGenerating(false);
+  };import React, { useState, useEffect } from 'react';
+import './SearchTracks.css';
 
 function SearchTracks() {
   const [query, setQuery] = useState('');
@@ -7,6 +62,7 @@ function SearchTracks() {
   const [mix, setMix] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [autoGenerating, setAutoGenerating] = useState(false);
 
   // Load mix from localStorage and fetch top tracks on mount
   useEffect(() => {
@@ -119,13 +175,16 @@ function SearchTracks() {
       </div>
 
       <div className="dj-layout">
-        {/* Search Section */}
+        {/* Top Tracks / Search Section */}
         <div className="search-section">
-          <h2>🔍 Find Tracks</h2>
+          <div className="section-header">
+            <h2>⭐ Your Top 10 Tracks</h2>
+            <p className="section-subtitle">Click "+ Add" to build your mix</p>
+          </div>
           <form onSubmit={handleSearch} className="search-form">
             <input
               type="text"
-              placeholder="Search for tracks, artists, or albums..."
+              placeholder="Search for more tracks..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="search-input"
@@ -138,13 +197,16 @@ function SearchTracks() {
           {error && <p className="error-message">{error}</p>}
 
           <div className="tracks-list">
-            {loading && <p className="loading">Loading...</p>}
+            {loading && <p className="loading">Loading your top tracks...</p>}
             
             {tracks.length > 0 && (
               <div className="tracks-items">
-                <p className="section-label">Results ({tracks.length})</p>
-                {tracks.map((track) => (
+                <p className="section-label">
+                  {query ? `Search Results (${tracks.length})` : '🔥 Your Favorites'}
+                </p>
+                {tracks.map((track, idx) => (
                   <div key={track.id} className="track-item">
+                    <div className="track-rank">{!query && idx + 1}</div>
                     <div className="track-item-info">
                       <h4>{track.name}</h4>
                       <p>{track.artists[0]?.name || 'Unknown'}</p>
@@ -153,8 +215,9 @@ function SearchTracks() {
                       onClick={() => addToMix(track)}
                       className="add-button"
                       disabled={mix.some(t => t.id === track.id)}
+                      title={mix.some(t => t.id === track.id) ? 'Already in mix' : 'Add to mix'}
                     >
-                      {mix.some(t => t.id === track.id) ? '✓ Added' : '+ Add'}
+                      {mix.some(t => t.id === track.id) ? '✓' : '+'}
                     </button>
                   </div>
                 ))}
@@ -172,7 +235,12 @@ function SearchTracks() {
           <div className="mix-header">
             <h2>🎵 Your Mix</h2>
             {mix.length > 0 && (
-              <button onClick={clearMix} className="clear-button">Clear</button>
+              <div className="mix-buttons">
+                <button onClick={autoGeneratePlaylist} className="auto-dj-button" disabled={autoGenerating}>
+                  {autoGenerating ? '🤖 Generating...' : '🤖 Auto DJ'}
+                </button>
+                <button onClick={clearMix} className="clear-button">Clear</button>
+              </div>
             )}
           </div>
 

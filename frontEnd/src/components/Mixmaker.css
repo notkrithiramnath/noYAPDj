@@ -62,8 +62,19 @@
 .search-section h2,
 .mix-section h2 {
   font-size: 24px;
-  margin: 0 0 20px 0;
+  margin: 0 0 8px 0;
   color: #1db954;
+}
+
+.section-header {
+  margin-bottom: 20px;
+}
+
+.section-subtitle {
+  font-size: 13px;
+  color: #888;
+  margin: 6px 0 0 0;
+  font-style: italic;
 }
 
 .search-form {
@@ -158,6 +169,14 @@
   cursor: pointer;
 }
 
+.track-rank {
+  font-weight: 700;
+  color: #1db954;
+  min-width: 28px;
+  text-align: center;
+  font-size: 16px;
+}
+
 .track-item:hover {
   background: rgba(29, 185, 84, 0.1);
 }
@@ -197,6 +216,7 @@
   transition: all 0.3s ease;
   margin-left: 12px;
   white-space: nowrap;
+  min-width: 40px;
 }
 
 .add-button:hover:not(:disabled) {
@@ -239,6 +259,11 @@
   margin: 0;
 }
 
+.mix-buttons {
+  display: flex;
+  gap: 8px;
+}
+
 .clear-button {
   padding: 6px 12px;
   background: rgba(255, 107, 107, 0.2);
@@ -252,6 +277,29 @@
 
 .clear-button:hover {
   background: rgba(255, 107, 107, 0.3);
+}
+
+.auto-dj-button {
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 1px solid #667eea;
+  color: #fff;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.auto-dj-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  transform: translateY(-2px);
+}
+
+.auto-dj-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .empty-mix {
