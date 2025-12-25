@@ -63,14 +63,11 @@ public String getTrackFeatures(String accessToken, String trackId) {
     return response.getBody();
 }
 //using danceability to get recs
-public String getRecommendations(String accessToken, String seedTracks, String targetEnergy, String targetDanceability) {
+public String getRecommendations(String accessToken, String seedTracks) {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(accessToken);
     
-    String url = "https://api.spotify.com/v1/recommendations?seed_tracks=" + seedTracks 
-                 + "&target_energy=" + targetEnergy 
-                 + "&target_danceability=" + targetDanceability 
-                 + "&limit=10";
+    String url = "https://api.spotify.com/v1/recommendations?seed_tracks=" + seedTracks + "&limit=10";
     HttpEntity<String> entity = new HttpEntity<>(headers);
     ResponseEntity<String> response = restTemplate.exchange(
         url,
@@ -80,5 +77,5 @@ public String getRecommendations(String accessToken, String seedTracks, String t
     );
     
     return response.getBody();
-}
+    }   
 }

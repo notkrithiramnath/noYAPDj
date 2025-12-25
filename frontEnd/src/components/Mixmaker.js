@@ -1,3 +1,4 @@
+//had alot of help from claude for this part
 const handleLogout = () => {
     localStorage.removeItem('accessToken');
     window.location.href = '/';
@@ -11,6 +12,7 @@ const handleLogout = () => {
 
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
+      
       setError('Please login first');
       return;
     }
